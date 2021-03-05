@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/spacing_m">
+
+    <View
+        android:id="@+id/view_information"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/red_primary"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text_information_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_best_location_dialog_title"
+        android:textColor="@color/light_primary"
+        app:layout_constraintBottom_toBottomOf="@+id/view_information"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/image_country_flag"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="@dimen/spacing_m"
+        app:layout_constraintBottom_toBottomOf="@+id/text_ip_address"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text_location_name"
+        tools:src="@color/red_primary" />
+
+    <TextView
+        android:id="@+id/text_location_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_m"
+        android:layout_marginTop="@dimen/spacing_m"
+        android:layout_marginEnd="@dimen/spacing_m"
+        android:textSize="@dimen/font_size_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/image_country_flag"
+        app:layout_constraintTop_toBottomOf="@+id/view_information"
+        tools:text="Indonesia" />
+
+    <TextView
+        android:id="@+id/text_ip_address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_m"
+        android:textColor="@color/dark_secondary"
+        android:textSize="@dimen/font_size_12"
+        app:layout_constraintStart_toStartOf="@id/text_location_name"
+        app:layout_constraintTop_toBottomOf="@+id/text_location_name"
+        tools:text="12.34.56" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
