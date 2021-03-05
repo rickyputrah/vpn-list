@@ -2,6 +2,8 @@
     <string name="app_name">Express</string>
     <string name="text_refresh">Refresh</string>
     <string name="text_best_location">Show Best Location</string>
+    <string name="text_best_location_dialog_title">Best Location</string>
+    <string name="text_error_best_location">Best Location Not Found</string>
 
     <plurals name="text_number_connection">
         <item quantity="one"><![CDATA[%1$d connection]]></item>

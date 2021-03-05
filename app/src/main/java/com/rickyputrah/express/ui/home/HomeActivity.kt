@@ -1,8 +1,11 @@
 package com.rickyputrah.express.ui.home
 
+import android.app.Dialog
 import android.os.Bundle
+import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.rickyputrah.express.databinding.BestLocationDialogBinding
 import com.rickyputrah.express.databinding.HomeActivityBinding
 import com.rickyputrah.express.model.LocationItemModel
 import com.rickyputrah.express.ui.home.adapter.LocationListAdapter
@@ -18,9 +21,16 @@ class HomeActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupAdapter()
+        setupListener()
 
         //TODO Request Data
         mockData()
+    }
+
+    private fun setupListener() {
+        binding.buttonShowBest.setOnClickListener {
+            showBestLocationDialog()
+        }
     }
 
     private fun mockData() {
@@ -49,5 +59,18 @@ class HomeActivity : AppCompatActivity() {
         adapter = LocationListAdapter(this)
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter
+    }
+
+    private fun showBestLocationDialog() {
+        val dialogActivity = Dialog(this)
+        dialogActivity.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        val dialogBinding = BestLocationDialogBinding.inflate(layoutInflater, null, false)
+        dialogActivity.setContentView(dialogBinding.root)
+
+        //TODO Setup View Dialog With Correct Data
+        dialogBinding.textIpAddress.text = "Mock IP address"
+        dialogBinding.textLocationName.text = "Location Name"
+
+        dialogActivity.show()
     }
 }
