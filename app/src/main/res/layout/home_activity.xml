@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:overScrollMode="never"
+        app:layout_constraintBottom_toTopOf="@+id/separator"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/location_list_item" />
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginBottom="@dimen/spacing_m"
+        android:background="@color/dark_secondary"
+        app:layout_constraintBottom_toTopOf="@+id/button_show_best" />
+
+    <Button
+        android:id="@+id/button_show_best"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_m"
+        android:layout_marginEnd="@dimen/spacing_s"
+        android:layout_marginBottom="@dimen/spacing_m"
+        android:layout_weight="1"
+        android:text="@string/text_best_location"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/button_refresh"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <ImageButton
+        android:id="@+id/button_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="@dimen/spacing_m"
+        android:backgroundTint="@color/green_primary"
+        android:src="@drawable/ic_vector_refresh_24"
+        app:icon="@drawable/ic_vector_refresh_24"
+        app:layout_constraintBottom_toBottomOf="@id/button_show_best"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/button_show_best" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
