@@ -2,6 +2,13 @@ package com.rickyputrah.express.model
 
 import com.rickyputrah.express.data.model.LocationVpnResponse
 
+
+data class BestLocationItemModel(
+    val name: String,
+    val ip: String,
+    val image: String
+)
+
 data class LocationItemModel(
     val name: String,
     val ipList: List<String>,

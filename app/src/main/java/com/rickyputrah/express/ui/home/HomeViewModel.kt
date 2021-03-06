@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.rickyputrah.express.data.repository.ILocationVpnRepository
 import com.rickyputrah.express.data.repository.ResultRepository.Error
 import com.rickyputrah.express.data.repository.ResultRepository.Success
+import com.rickyputrah.express.model.BestLocationItemModel
+import com.rickyputrah.express.model.LocationItemModel
 import com.rickyputrah.express.model.LocationListModel
 import com.rickyputrah.express.model.toLocationListModel
 import kotlinx.coroutines.launch
@@ -26,6 +28,14 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun startToSearchBestLocation(listOfLocation: List<LocationItemModel>) {
+        viewModelScope.launch {
+            when (val result = locationVpnRepository.getBestLocation(listOfLocation)) {
+                is Success -> state.postValue(State.SuccessBestLocation(result.data))
+            }
+        }
+    }
+
     private fun handleError(result: Error): State {
         return when {
             (result is Error.ConnectionTimeout) -> State.ErrorConnectionTimeout
@@ -38,6 +48,7 @@ class HomeViewModel @Inject constructor(
 
     sealed class State {
         data class SuccessGetLocationList(val data: LocationListModel) : State()
+        data class SuccessBestLocation(val data: BestLocationItemModel) : State()
         object Loading : State()
         object ErrorConnectionTimeout : State()
         object UnknownError : State()

@@ -2,15 +2,19 @@ package com.rickyputrah.express.ui.home
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Base64
 import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.rickyputrah.express.R
 import com.rickyputrah.express.databinding.BestLocationDialogBinding
 import com.rickyputrah.express.databinding.ErrorDialogBinding
 import com.rickyputrah.express.databinding.HomeActivityBinding
 import com.rickyputrah.express.di.getApplicationComponent
+import com.rickyputrah.express.model.BestLocationItemModel
 import com.rickyputrah.express.model.LocationListModel
 import com.rickyputrah.express.ui.home.HomeViewModel.State
 import com.rickyputrah.express.ui.home.adapter.LocationListAdapter
@@ -24,6 +28,8 @@ class HomeActivity : AppCompatActivity() {
     @Inject
     lateinit var viewModel: HomeViewModel
 
+    private var bestLocation: BestLocationItemModel? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = HomeActivityBinding.inflate(layoutInflater)
@@ -33,11 +39,11 @@ class HomeActivity : AppCompatActivity() {
         setupAdapter()
         setupListener()
         setupObserver()
+        toggleButtonShowBest(false)
 
-        //Start Rquest Location List
+        //Start Request Location List
         viewModel.requestLocationList()
     }
-
 
     private fun setupObserver() {
         viewModel.state.observe(this, Observer {
@@ -47,7 +53,11 @@ class HomeActivity : AppCompatActivity() {
 
     private fun renderState(state: State?) {
         when (state) {
-            is State.SuccessGetLocationList -> setupData(state.data)
+            is State.SuccessGetLocationList -> handleLocationListData(state.data)
+            is State.SuccessBestLocation -> {
+                bestLocation = state.data
+                toggleButtonShowBest(true)
+            }
             is State.ErrorConnectionTimeout -> handleErrorState(resources.getString(R.string.text_connection_timeout_error))
             is State.UnknownError -> handleErrorState(resources.getString(R.string.text_unknown_error))
             is State.RequestForbidden -> handleErrorState(resources.getString(R.string.text_request_forbidden_error))
@@ -60,12 +70,15 @@ class HomeActivity : AppCompatActivity() {
         showErrorDialog(message)
     }
 
-    private fun setupData(data: LocationListModel) {
-        binding.loadingWidget.showLoading(false)
+    private fun handleLocationListData(data: LocationListModel) {
         binding.buttonRefresh.text = data.buttonText
         adapter.dataset = data.listOfLocation
         adapter.notifyDataSetChanged()
         binding.loadingWidget.showLoading(false)
+
+        bestLocation = null
+        toggleButtonShowBest(false)
+        viewModel.startToSearchBestLocation(data.listOfLocation)
     }
 
     private fun setupAdapter() {
@@ -85,24 +98,33 @@ class HomeActivity : AppCompatActivity() {
 
 
     private fun showBestLocationDialog() {
-        val dialogActivity = Dialog(this)
-        dialogActivity.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        val dialogBinding = BestLocationDialogBinding.inflate(layoutInflater, null, false)
-        dialogActivity.setContentView(dialogBinding.root)
+        bestLocation?.let { location ->
+            val dialogBinding = BestLocationDialogBinding.inflate(layoutInflater, null, false)
+            dialogBinding.textIpAddress.text = location.ip
+            dialogBinding.textLocationName.text = location.name
+            Glide.with(this).load(Base64.decode(location.image, Base64.DEFAULT))
+                .error(R.color.red_primary)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(dialogBinding.imageCountryFlag)
 
-        //TODO Setup View Dialog With Correct Data
-        dialogBinding.textIpAddress.text = "Mock IP address"
-        dialogBinding.textLocationName.text = "Location Name"
-
-        dialogActivity.show()
+            Dialog(this).apply {
+                requestWindowFeature(Window.FEATURE_NO_TITLE)
+                setContentView(dialogBinding.root)
+            }.show()
+        }
     }
 
     private fun showErrorDialog(message: String) {
-        val dialogActivity = Dialog(this)
-        dialogActivity.requestWindowFeature(Window.FEATURE_NO_TITLE)
         val dialogBinding = ErrorDialogBinding.inflate(layoutInflater, null, false)
-        dialogActivity.setContentView(dialogBinding.root)
         dialogBinding.textErrorMessage.text = message
-        dialogActivity.show()
+        Dialog(this).apply {
+            requestWindowFeature(Window.FEATURE_NO_TITLE)
+            setContentView(dialogBinding.root)
+        }.show()
+    }
+
+    private fun toggleButtonShowBest(isEnabled: Boolean) {
+        binding.buttonShowBest.isClickable = isEnabled
+        binding.buttonShowBest.isEnabled = isEnabled
     }
 }
