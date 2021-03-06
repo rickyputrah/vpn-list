@@ -1,6 +1,7 @@
 package com.rickyputrah.express.network
 
-import com.rickyputrah.express.util.BASE_URL
+import android.content.Context
+import com.rickyputrah.express.BaseApplication
 import com.rickyputrah.express.util.CONNECT_TIMEOUT
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -16,7 +17,7 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 
-class ApiServiceImpl @Inject constructor() : ApiService {
+class ApiServiceImpl @Inject constructor(private val context: Context) : ApiService {
 
     override fun <T> create(type: Class<T>): T {
         val httpClientBuilder = OkHttpClient.Builder()
@@ -29,12 +30,16 @@ class ApiServiceImpl @Inject constructor() : ApiService {
         val httpClient = httpClientBuilder.build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(getBaseUrl())
             .client(httpClient)
             .addConverterFactory(SimpleXmlConverterFactory.create())
             .build()
 
         return retrofit.create(type)
+    }
+
+    private fun getBaseUrl(): String {
+        return (context.applicationContext as BaseApplication).getBaseUrl()
     }
 
     private fun applyLoggingInterceptor(builder: OkHttpClient.Builder) {
