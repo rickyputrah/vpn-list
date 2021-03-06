@@ -6,6 +6,8 @@ import com.rickyputrah.express.CoroutineTestRule
 import com.rickyputrah.express.data.model.LocationVpnResponse
 import com.rickyputrah.express.data.repository.ILocationVpnRepository
 import com.rickyputrah.express.data.repository.ResultRepository
+import com.rickyputrah.express.model.BestLocationItemModel
+import com.rickyputrah.express.model.LocationItemModel
 import com.rickyputrah.express.model.toLocationListModel
 import io.mockk.coEvery
 import io.mockk.every
@@ -221,4 +223,34 @@ class HomeViewModelTest {
                 stateList[1]
             )
         }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `should state SuccessBestLocation when call startToSearchBestLocation`() = runBlockingTest {
+        //GIVEN
+        val listOfLocation = listOf(LocationItemModel(name = "", ipList = listOf(), image = ""))
+        val bestLocation = BestLocationItemModel(name = "", ip = "", image = "")
+
+        coEvery { locationRepository.getBestLocation(listOfLocation) } returns ResultRepository.Success(
+            bestLocation
+        )
+        //Capture Live Data
+        val observer = mockk<Observer<HomeViewModel.State>>()
+        val slot = slot<HomeViewModel.State>()
+        val stateList = arrayListOf<HomeViewModel.State>()
+        every { observer.onChanged(capture(slot)) } answers {
+            //store captured value
+            stateList.add(slot.captured)
+        }
+        viewModel.state.observeForever(observer)
+
+        //WHEN
+        viewModel.startToSearchBestLocation(listOfLocation)
+
+        //THEN
+        assertEquals(
+            HomeViewModel.State.SuccessBestLocation(bestLocation),
+            stateList[0]
+        )
+    }
 }
