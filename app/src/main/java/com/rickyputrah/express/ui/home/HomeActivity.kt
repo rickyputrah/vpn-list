@@ -31,7 +31,6 @@ class HomeActivity : AppCompatActivity() {
         setupAdapter()
         setupListener()
 
-        //TODO Request Data
         viewModel.requestLocationList()
     }
 
@@ -53,13 +52,16 @@ class HomeActivity : AppCompatActivity() {
             is State.ErrorConnectionTimeout -> println("")
             is State.UnknownError -> println("")
             is State.RequestForbidden -> println("")
+            is State.Loading -> binding.loadingWidget.showLoading(true)
         }
     }
 
     private fun setupData(data: LocationListModel) {
+        binding.loadingWidget.showLoading(false)
         binding.buttonRefresh.text = data.buttonText
         adapter.dataset = data.listOfLocation
         adapter.notifyDataSetChanged()
+        binding.loadingWidget.showLoading(false)
     }
 
     private fun setupAdapter() {

@@ -31,10 +31,10 @@ class Location(
 )
 
 @Root(name = "server")
-class Server {
+class Server(
     @field:Attribute(name = "ip")
     var ipAddress: String = ""
-}
+)
 
 @Root(name = "icons", strict = false)
 class XmlIcons(

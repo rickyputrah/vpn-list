@@ -8,9 +8,7 @@ import com.rickyputrah.express.data.repository.ResultRepository.Error
 import com.rickyputrah.express.data.repository.ResultRepository.Success
 import com.rickyputrah.express.model.LocationListModel
 import com.rickyputrah.express.model.toLocationListModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(
@@ -19,24 +17,19 @@ class HomeViewModel @Inject constructor(
 
     fun requestLocationList() {
         viewModelScope.launch {
-            val result = withContext(Dispatchers.IO) {
-                when (val result = locationVpnRepository.getLocationVpnList()) {
-                    is Success -> {
-                        State.SuccessGetLocationList(result.data.toLocationListModel())
-                    }
-                    is Error -> {
-                        handleError(result)
-                    }
-                }
+            state.postValue(State.Loading)
+            val stateResult = when (val result = locationVpnRepository.getLocationVpnList()) {
+                is Success -> State.SuccessGetLocationList(result.data.toLocationListModel())
+                is Error -> handleError(result)
             }
-            state.postValue(result)
+            state.postValue(stateResult)
         }
     }
 
     private fun handleError(result: Error): State {
         return when {
             (result is Error.ConnectionTimeout) -> State.ErrorConnectionTimeout
-            (result is Error.HttpException && result.errorCode == 403) -> State.RequestForbidden
+            (result is Error.HttpException && result.errorCode == REQUEST_CODE_FORBIDDEN) -> State.RequestForbidden
             else -> State.UnknownError
         }
     }
@@ -45,8 +38,13 @@ class HomeViewModel @Inject constructor(
 
     sealed class State {
         data class SuccessGetLocationList(val data: LocationListModel) : State()
+        object Loading : State()
         object ErrorConnectionTimeout : State()
         object UnknownError : State()
         object RequestForbidden : State()
+    }
+
+    companion object {
+        const val REQUEST_CODE_FORBIDDEN = 403
     }
 }

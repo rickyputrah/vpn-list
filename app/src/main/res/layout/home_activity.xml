@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
@@ -46,5 +47,11 @@
         app:layout_constraintBottom_toBottomOf="@id/button_refresh"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/button_refresh" />
+
+    <com.rickyputrah.express.ui.common.LoadingWidget
+        android:id="@+id/loading_widget"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="3dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
