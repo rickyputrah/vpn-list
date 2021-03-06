@@ -6,7 +6,9 @@ import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.rickyputrah.express.R
 import com.rickyputrah.express.databinding.BestLocationDialogBinding
+import com.rickyputrah.express.databinding.ErrorDialogBinding
 import com.rickyputrah.express.databinding.HomeActivityBinding
 import com.rickyputrah.express.di.getApplicationComponent
 import com.rickyputrah.express.model.LocationListModel
@@ -30,17 +32,14 @@ class HomeActivity : AppCompatActivity() {
 
         setupAdapter()
         setupListener()
+        setupObserver()
 
+        //Start Rquest Location List
         viewModel.requestLocationList()
     }
 
-    private fun setupListener() {
-        binding.buttonShowBest.setOnClickListener {
-            showBestLocationDialog()
-        }
-        binding.buttonRefresh.setOnClickListener {
-            viewModel.requestLocationList()
-        }
+
+    private fun setupObserver() {
         viewModel.state.observe(this, Observer {
             renderState(it)
         })
@@ -49,11 +48,16 @@ class HomeActivity : AppCompatActivity() {
     private fun renderState(state: State?) {
         when (state) {
             is State.SuccessGetLocationList -> setupData(state.data)
-            is State.ErrorConnectionTimeout -> println("")
-            is State.UnknownError -> println("")
-            is State.RequestForbidden -> println("")
+            is State.ErrorConnectionTimeout -> handleErrorState(resources.getString(R.string.text_connection_timeout_error))
+            is State.UnknownError -> handleErrorState(resources.getString(R.string.text_unknown_error))
+            is State.RequestForbidden -> handleErrorState(resources.getString(R.string.text_request_forbidden_error))
             is State.Loading -> binding.loadingWidget.showLoading(true)
         }
+    }
+
+    private fun handleErrorState(message: String) {
+        binding.loadingWidget.showLoading(false)
+        showErrorDialog(message)
     }
 
     private fun setupData(data: LocationListModel) {
@@ -70,6 +74,16 @@ class HomeActivity : AppCompatActivity() {
         binding.recyclerView.adapter = adapter
     }
 
+    private fun setupListener() {
+        binding.buttonShowBest.setOnClickListener {
+            showBestLocationDialog()
+        }
+        binding.buttonRefresh.setOnClickListener {
+            viewModel.requestLocationList()
+        }
+    }
+
+
     private fun showBestLocationDialog() {
         val dialogActivity = Dialog(this)
         dialogActivity.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -80,6 +94,15 @@ class HomeActivity : AppCompatActivity() {
         dialogBinding.textIpAddress.text = "Mock IP address"
         dialogBinding.textLocationName.text = "Location Name"
 
+        dialogActivity.show()
+    }
+
+    private fun showErrorDialog(message: String) {
+        val dialogActivity = Dialog(this)
+        dialogActivity.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        val dialogBinding = ErrorDialogBinding.inflate(layoutInflater, null, false)
+        dialogActivity.setContentView(dialogBinding.root)
+        dialogBinding.textErrorMessage.text = message
         dialogActivity.show()
     }
 }
