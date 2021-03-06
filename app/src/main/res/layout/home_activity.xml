@@ -20,31 +20,31 @@
         android:layout_height="0.5dp"
         android:layout_marginBottom="@dimen/spacing_m"
         android:background="@color/dark_secondary"
-        app:layout_constraintBottom_toTopOf="@+id/button_show_best" />
+        app:layout_constraintBottom_toTopOf="@+id/button_refresh" />
 
     <Button
-        android:id="@+id/button_show_best"
+        android:id="@+id/button_refresh"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_m"
         android:layout_marginEnd="@dimen/spacing_s"
         android:layout_marginBottom="@dimen/spacing_m"
         android:layout_weight="1"
-        android:text="@string/text_best_location"
+        android:text="@string/text_refresh_location_list"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/button_refresh"
+        app:layout_constraintEnd_toStartOf="@+id/button_show_best"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
-        android:id="@+id/button_refresh"
+        android:id="@+id/button_show_best"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginEnd="@dimen/spacing_m"
         android:backgroundTint="@color/green_primary"
-        android:src="@drawable/ic_vector_refresh_24"
-        app:layout_constraintBottom_toBottomOf="@id/button_show_best"
+        android:src="@drawable/ic_vector_star_white_24"
+        app:layout_constraintBottom_toBottomOf="@id/button_refresh"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/button_show_best" />
+        app:layout_constraintTop_toTopOf="@+id/button_refresh" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
