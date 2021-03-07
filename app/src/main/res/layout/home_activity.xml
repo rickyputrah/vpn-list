@@ -56,7 +56,6 @@
         android:id="@+id/loading_widget"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:elevation="3dp"
-        android:visibility="gone" />
+        android:elevation="3dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
