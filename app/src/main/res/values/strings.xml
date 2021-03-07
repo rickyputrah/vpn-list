@@ -7,7 +7,7 @@
     <string name="text_error_dialog">Error</string>
     <string name="text_connection_timeout_error">The request timed out</string>
     <string name="text_unknown_error">An unknown error happened</string>
-    <string name="text_request_forbidden_error">he API returned error code 403</string>
+    <string name="text_request_forbidden_error">The API returned error code 403</string>
 
     <plurals name="text_number_connection">
         <item quantity="one"><![CDATA[%1$d connection]]></item>
