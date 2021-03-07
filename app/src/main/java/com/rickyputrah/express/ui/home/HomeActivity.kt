@@ -53,7 +53,10 @@ class HomeActivity : AppCompatActivity() {
 
     private fun renderState(state: State?) {
         when (state) {
-            is State.SuccessGetLocationList -> handleLocationListData(state.data)
+            is State.SuccessGetLocationList -> {
+                setupLocationListData(state.data)
+                findBestLocation(state.data)
+            }
             is State.SuccessBestLocation -> {
                 bestLocation = state.data
                 toggleButtonShowBest(true)
@@ -70,12 +73,14 @@ class HomeActivity : AppCompatActivity() {
         showErrorDialog(message)
     }
 
-    private fun handleLocationListData(data: LocationListModel) {
+    private fun setupLocationListData(data: LocationListModel) {
         binding.buttonRefresh.text = data.buttonText
         adapter.dataset = data.listOfLocation
         adapter.notifyDataSetChanged()
         binding.loadingWidget.showLoading(false)
+    }
 
+    private fun findBestLocation(data: LocationListModel) {
         bestLocation = null
         toggleButtonShowBest(false)
         viewModel.startToSearchBestLocation(data.listOfLocation)
@@ -95,7 +100,6 @@ class HomeActivity : AppCompatActivity() {
             viewModel.requestLocationList()
         }
     }
-
 
     private fun showBestLocationDialog() {
         bestLocation?.let { location ->
